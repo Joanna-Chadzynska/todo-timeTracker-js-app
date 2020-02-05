@@ -1,11 +1,7 @@
 class Store {
 	static getTasks() {
-		// const url = "https://api.myjson.com/bins/7c40e";
-		return fetch("https://api.myjson.com/bins/7c40e")
+		return fetch(" http://localhost:3000/tasks")
 			.then((resp) => resp.json())
-			.then((data) => {
-				const tasks = data.tasks;
-				return tasks;
-			});
+			.then((data) => data);
 	}
 }

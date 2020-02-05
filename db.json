@@ -1,0 +1,51 @@
+{
+	"tasks": [
+		{
+			"id": 1,
+			"title": "task1",
+			"description": "desc1",
+			"status": "open",
+			"operations": [
+				{
+					"description": "desc1",
+					"timeSpent": 0
+				}
+			]
+		},
+		{
+			"id": 2,
+			"title": "task2",
+			"description": "desc2",
+			"status": "open",
+			"operations": [
+				{
+					"description": "Operation1",
+					"timeSpent": 0
+				}
+			]
+		},
+		{
+			"title": "task3",
+			"description": "desc3",
+			"status": "open",
+			"operations": [
+				{
+					"description": "Operation1",
+					"timeSpent": 1200
+				},
+				{
+					"description": "Operation2",
+					"timeSpent": 1800
+				}
+			],
+			"id": 3
+		},
+		{
+			"title": "rewrqewr",
+			"description": "asdf",
+			"status": "open",
+			"operations": [],
+			"id": 4
+		}
+	]
+}

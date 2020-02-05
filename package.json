@@ -1,0 +1,20 @@
+{
+	"name": "todo-timeTracker",
+	"version": "1.0.0",
+	"description": "Aplikacja Todo wraz z TimeTrackerem, czyli aplikacja, do której będzie można dodawać zadania do wykonania oraz dodawać do nich operacje wykonane wraz z czasem jaki spędziliśmy nad danym zadaniem.",
+	"main": "index.js",
+	"scripts": {
+		"start": "json-server --watch db.json"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Joanna-Chadzynska/todo-timeTracker-js-app.git"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/Joanna-Chadzynska/todo-timeTracker-js-app/issues"
+	},
+	"homepage": "https://github.com/Joanna-Chadzynska/todo-timeTracker-js-app#readme"
+}
