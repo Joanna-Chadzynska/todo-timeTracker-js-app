@@ -5,15 +5,62 @@ class DomElements {
 		);
 	}
 
-	static addTaskToList(task) {
-		const list = document.getElementById("tasks-list");
+	// SECTION TASK
+	static addSection(task) {
 		const section = document.createElement("section");
-		const ul = document.createElement("ul");
-		const liTaskBtns = document.createElement("li");
-		const taskOperationsList = document.createElement("ul");
-		taskOperationsList.className = "list-group operation";
+		section.className = "task";
+		section.dataset.key = `${task.id}`;
+		section.innerHTML = `
+            <h2>${task.title}</h2>
+		`;
+		section.appendChild(DomElements.listGroupTodo(task));
+		section.appendChild(DomElements.operationsList(task));
+		return section;
+	}
 
-		// Add operation form shown
+	static listGroupTodo(task) {
+		const ul = document.createElement("ul");
+
+		ul.className = `list-group todo`;
+		ul.appendChild(DomElements.mainTaskBtns(task));
+		// ul.appendChild(DomElements.addOperationForm());
+		return ul;
+	}
+
+	static mainTaskBtns(task) {
+		const liTaskBtns = document.createElement("li");
+		const btnAddForm = document.createElement("a");
+		btnAddForm.className = "btn btn-secondary float-right toggle-form";
+		btnAddForm.dataset.key = `${task.id}`;
+		btnAddForm.innerText = "Add operation";
+		liTaskBtns.className = `list-group-item list-group-item-action active task-description"`;
+		liTaskBtns.innerHTML = `
+		${task.description}
+		<a href="" class="btn btn-secondary float-right finish" id='finish-task'>Finish</a>
+		`;
+
+		liTaskBtns.appendChild(btnAddForm);
+
+		const toggleForm = (e) => {
+			let key = Number(e.target.dataset.key);
+
+			if (DomElements.addOperationForm().style.display === "none") {
+				DomElements.addOperationForm().style.display = "block";
+			} else {
+				DomElements.addOperationForm().style.display = "none";
+			}
+
+			DomElements.listGroupTodo(task).appendChild(
+				DomElements.addOperationForm()
+			);
+		};
+
+		btnAddForm.addEventListener("click", toggleForm);
+
+		return liTaskBtns;
+	}
+
+	static addOperationForm() {
 		const addOperationForm = document.createElement("li");
 		addOperationForm.style.display = "none";
 		addOperationForm.className = `list-group-item task-operation`;
@@ -29,49 +76,66 @@ class DomElements {
 		<input type="submit" value="Add operation" class="btn btn-primary submit-operation" />
 	</form>
 		`;
+		return addOperationForm;
+	}
 
+	static operationsList(task) {
+		const operationsList = document.createElement("ul");
+		operationsList.className = "list-group operation";
 		const operationItem = task.operations.map((operation) => {
-			return `
+			if (operation.timeSpent === 0) {
+				return `
 			<li class="list-group-item task-operation">
 					${operation.description}
-					<a href="" class="btn btn-primary float-right">Stop timer</a>
-					<span class="btn btn-warning float-right">Czas: 1h 23m ${operation.timeSpent}</span>
+					<span class="badge badge-primary badge-pill">Time: ${DomElements.convertTime(
+						operation.timeSpent
+					)}</span>
+					<a href="" class="btn btn-primary float-right start-stop-timer">Start timer</a>
+					<a href="" class="btn btn-primary float-right start-timer"
+						>Add time manually</a
+					>
 			</li>
 			`;
-		});
-
-		taskOperationsList.innerHTML = task.operations.length > 0 && operationItem;
-		// section
-		section.className = "task";
-		section.dataset.key = `${task.id}`;
-		section.innerHTML = `
-            <h2>${task.title}</h2>
-		`;
-
-		// list group
-		ul.className = `list-group todo`;
-
-		// list group first element
-		liTaskBtns.className = `list-group-item list-group-item-action active task-description"`;
-		liTaskBtns.innerHTML = `
-		${task.description}
-		<a href="" class="btn btn-secondary float-right finish" id='finish-task'>Finish</a>
-		<a href="" class="btn btn-secondary float-right add-form"
-			>Add operation</a
-		>
-		`;
-
-		const showOperationForm = (e) => {
-			if (addOperationForm.style.display === "none") {
-				addOperationForm.style.display = "block";
 			} else {
-				addOperationForm.style.display = "none";
+				return `
+				<li class="list-group-item task-operation">
+				${operation.description}
+					<a href="" class="btn btn-primary float-right start-stop-timer">Stop timer</a>
+					<span class="btn btn-warning float-right">Time: ${DomElements.convertTime(
+						operation.timeSpent
+					)}</span>
+				</li>
+				`;
 			}
+		});
+		operationsList.innerHTML =
+			task.operations.length > 0 ? operationItem : null;
 
-			ul.appendChild(addOperationForm);
-		};
+		// DomElements.timer(2000);
 
-		const formAddOperation = addOperationForm.querySelector("form");
+		return operationsList;
+	}
+
+	static addTaskToList(task) {
+		const list = document.getElementById("tasks-list");
+		// const btnTime = taskOperationsList.querySelector(".start-stop-timer");
+		// console.log(btnTime);
+		// const btnReset = document.querySelector(".reset-timer");
+		// btnTime.addEventListener("click", DomElements.timer);
+
+		// const showOperationForm = (e) => {
+		// 	if (addOperationForm.style.display === "none") {
+		// 		addOperationForm.style.display = "block";
+		// 	} else {
+		// 		addOperationForm.style.display = "none";
+		// 	}
+
+		// 	DomElements.listGroupTodo(task).appendChild(addOperationForm);
+		// };
+
+		const formAddOperation = DomElements.addOperationForm().querySelector(
+			"form"
+		);
 		formAddOperation.addEventListener("click", (e) => {
 			e.preventDefault();
 			// Use document.createEvent to initiate submit
@@ -89,15 +153,8 @@ class DomElements {
 			console.log(operations);
 			// Store.updateTasksOperations(task.id, operation);
 		});
-		liTaskBtns
-			.querySelector(".add-form")
-			.addEventListener("click", showOperationForm);
 
-		ul.appendChild(liTaskBtns);
-
-		section.appendChild(ul);
-		section.appendChild(taskOperationsList);
-		list.appendChild(section);
+		list.appendChild(DomElements.addSection(task));
 	}
 
 	static displayOperations() {}
@@ -113,10 +170,41 @@ class DomElements {
 		}
 	}
 
+	static timer(seconds) {
+		let time;
+		let active = false;
+		let interval;
+		const start = () => {
+			time++;
+			console.log(DomElements.convertTime(time));
+		};
+		if (seconds > 0) {
+			time = seconds;
+		} else {
+			time = 0;
+		}
+		if (!active) {
+			active = !active;
+			interval = setInterval(start, 1000);
+		} else {
+			active = !active;
+			clearInterval(interval);
+		}
+	}
+
+	static convertTime(given_seconds) {
+		const dateObj = new Date(given_seconds * 1000);
+		const hours = dateObj.getUTCHours();
+		const minutes = dateObj.getUTCMinutes();
+		const seconds = dateObj.getSeconds();
+
+		const timeString = `${hours.toLocaleString()}h ${minutes.toLocaleString()}m ${seconds.toLocaleString()}s`;
+		return timeString;
+	}
+
 	static showAlert(message, className) {
 		const div = document.createElement("div");
 		div.className = `alert alert-${className}`;
-
 		div.appendChild(document.createTextNode(message));
 
 		const container = document.getElementById("task-form-container");
